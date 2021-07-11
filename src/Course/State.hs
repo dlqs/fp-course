@@ -98,8 +98,7 @@ instance Applicative (State s) where
   pure ::
     a
     -> State s a
-  pure =
-    error "todo: Course.State pure#instance (State s)"
+  pure a = State(\s -> (a, s))
   (<*>) ::
     State s (a -> b)
     -> State s a
@@ -177,12 +176,16 @@ firstRepeat la = fst $ runState (findM pred' la) S.empty
 -- prop> \xs -> firstRepeat (distinct xs) == Empty
 --
 -- prop> \xs -> distinct xs == distinct (flatMap (\x -> x :. x :. Nil) xs)
+
+pred'' :: Ord a => a -> State (S.Set a) Bool
+pred'' = \a -> State(\s -> (not $ S.member a s, S.insert a s))
+
 distinct ::
   Ord a =>
   List a
   -> List a
-distinct =
-  error "todo: Course.State#distinct"
+-- distinct la = runState (filtering pred'' la) S.Empty
+distinct la = fst $ runState (filtering pred'' la) S.empty
 
 -- | A happy number is a positive integer, where the sum of the square of its digits eventually reaches 1 after repetition.
 -- In contrast, a sad number (not a happy number) is where the sum of the square of its digits never reaches 1
@@ -208,5 +211,7 @@ distinct =
 isHappy ::
   Integer
   -> Bool
-isHappy =
-  error "todo: Course.State#isHappy"
+isHappy x = contains True (firstRepeat (produce (\x' -> sumSquareDigits x') x ) >>= \y -> (return $ y == 1))
+  where sumSquareDigits 0 = 0
+        sumSquareDigits 1 = 1
+        sumSquareDigits n = (n `mod` 10) P.^ 2 + sumSquareDigits (n `div` 10)
