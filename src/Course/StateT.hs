@@ -246,10 +246,11 @@ instance Monad f => Applicative (OptionalT f) where
   pure = OptionalT . pure . pure
 
   (<*>) :: OptionalT f (a -> b) -> OptionalT f a -> OptionalT f b
-  --OptionalT foab <*> OptionalT foa = OptionalT(foab >>= \oab -> (foa >>= \oa -> pure (oab <*> oa)))
+  -- OptionalT foab <*> OptionalT foa = OptionalT(foab >>= \oab -> (foa >>= \oa -> pure (oab <*> oa)))
   OptionalT foab <*> OptionalT foa = OptionalT(do oab <- foab
-                                                  oa <- foa
-                                                  pure (oab <*> oa))
+                                                  case oab of Empty -> return Empty
+                                                              Full ab -> do oa <- foa
+                                                                            return (ab <$> oa))
   -- g :: Optional fab -> f (Optional b)
   -- h :: Optional a -> f (Optional b)
     -- where g Empty = pure Empty
