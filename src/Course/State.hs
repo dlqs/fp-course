@@ -104,8 +104,8 @@ instance Applicative (State s) where
     -> State s a
     -> State s b 
   State fab <*> State fa =
-    State(\s -> let (a, s') = fa s
-                    (f, s'') = fab s'
+    State(\s -> let (f, s') = fab s
+                    (a, s'') = fa s'
                 in  (f a, s'')
          )
 
