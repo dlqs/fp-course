@@ -259,7 +259,7 @@ find ::
   (a -> Bool)
   -> List a
   -> Optional a
-find p Nil = Empty
+find _ Nil = Empty
 find p (h:.t) = if (p h) then Full h else find p t
 
 -- | Determine if the length of the given list is greater than 4.
@@ -294,10 +294,9 @@ lengthGT4 = (<) 4 . length
 reverse ::
   List a
   -> List a
-reverse = error "asdasda"
  -- reverse = foldLeft (flip (:.)) Nil
--- reverse Nil = Nil
--- reverse (h:.t) = (reverse t) ++ (h:.Nil)
+reverse Nil = Nil
+reverse (h:.t) = (reverse t) ++ (h:.Nil)
 
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements
@@ -591,6 +590,10 @@ drop _ Nil =
   Nil
 drop n (_:.xs) =
   drop (n-1) xs
+
+tail :: List a -> List a
+tail Nil = Nil
+tail (_:.xs) = xs
 
 repeat ::
   a

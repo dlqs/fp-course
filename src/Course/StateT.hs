@@ -246,18 +246,12 @@ instance Monad f => Applicative (OptionalT f) where
   pure = OptionalT . pure . pure
 
   (<*>) :: OptionalT f (a -> b) -> OptionalT f a -> OptionalT f b
+  -- this will not work because we are flatmapping foa regardless if is empty or not
   -- OptionalT foab <*> OptionalT foa = OptionalT(foab >>= \oab -> (foa >>= \oa -> pure (oab <*> oa)))
   OptionalT foab <*> OptionalT foa = OptionalT(do oab <- foab
                                                   case oab of Empty -> return Empty
                                                               Full ab -> do oa <- foa
                                                                             return (ab <$> oa))
-  -- g :: Optional fab -> f (Optional b)
-  -- h :: Optional a -> f (Optional b)
-    -- where g Empty = pure Empty
-          -- g (Full ab) = foa >>= (\oa -> case oa of Empty -> pure Empty
-                                                   --Full a -> ab a)
-
-
 
 -- | Implement the `Monad` instance for `OptionalT f` given a Monad f.
 --
