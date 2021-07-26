@@ -84,7 +84,7 @@ cojoin ::
   Extend f =>
   f a
   -> f (f a)
-cojoin fa = ((<$>) id) <<= fa
+cojoin fa = id <<= fa
 -- <$> :: a -> b -> f a -> f b
 -- <<= :: f a -> b -> f a -> f b
 -- () <<= fa
